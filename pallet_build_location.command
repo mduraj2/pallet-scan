@@ -247,7 +247,7 @@ sub checkFormat(){
 	}
 	$lengthValidatedString = length $validatedString;
 	if ( $lengthValidatedString eq 8 || $lengthValidatedString eq 9 || $lengthValidatedString =~ /$substring/){
-		print "Format looks good. Searching in database now...\n";
+		print color('bold green');print "Format looks good. Searching in database now...\n";print color('reset');;
 	}
 	
 
@@ -309,7 +309,6 @@ sub checkMPN {
 	 foreach $data (@$ref)
             {
                 ($returnedMPN, $returnedPalletID) = @$data;
-				sleep 3;
             }
 	} else {
 		print color('bold red');
@@ -463,13 +462,12 @@ sub check_sn{
       
 	if ((0 + @{$ref}) > 0){
 		$sql = "UPDATE stations
-	SET ip_address =('$ip_address')";
+	SET ip_address =('$ip_address') WHERE serial_number =('$stn')";
 	$sth = $dbh->prepare($sql);
     
     # execute the query
     $sth->execute();
 	}
-	<>;
 	  $sth->finish;
 }
 
