@@ -207,6 +207,7 @@ while (1)
 	print "#################################################\n";
 	print "Press Enter to continue...\n";
 	<>;
+	check_version();
 }
 #sub routines
 sub commands{
