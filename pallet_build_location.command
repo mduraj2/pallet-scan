@@ -4,7 +4,7 @@
 # Purpose: Displaying a pallet number to user to help with identifying correct pallet
 # Author: Miroslaw Duraj
 # Date: 10/Mar/2020
-$version = '-3.5';
+$version = '-4.0';
 
 #use strict;
 use Term::ANSIColor;
