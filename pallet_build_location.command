@@ -4,7 +4,7 @@
 # Purpose: Displaying a pallet number to user to help with identifying correct pallet
 # Author: Miroslaw Duraj
 # Date: 10/Mar/2020
-$version = '-4.0';
+$version = '-4.1';
 
 #use strict;
 use Term::ANSIColor;
@@ -221,7 +221,7 @@ sub checkFormat(){
 	$lengthValidatedString = length $validatedString;
 	$substring = "/A";
 	
-	if ($lengthValidatedString > 15 && index($validatedString, "/A") != -1 )
+	if ($lengthValidatedString > 15 && $lengthValidatedString < 27 && index($validatedString, "/A") != -1 )
 	{
 		$validatedString = substr($validatedString,16);
 	}
@@ -257,8 +257,8 @@ sub mpn_from_gs1{
 
 	my ($str_begin ,$str_end , $nth_begin, $nth_end, $find, $p_begin, $p_end, $p);
 
-	$str_begin = $mpn;
-	$str_end = $mpn;
+	$str_begin = $validatedString;
+	$str_end = $validatedString;
 	$nth_begin = 4; $find = ','; $nth_end = $nth_begin+1;
 	
 	$str_begin =~ m/(?:.*?$find){$nth_begin}/g;
@@ -271,7 +271,7 @@ sub mpn_from_gs1{
 	
 	$p = ($p_end - $p_begin);
 	
-	$mpn = substr($str_begin, $p_begin, $p) if $p_begin>-1;
+	$validatedString = substr($str_begin, $p_begin, $p) if $p_begin>-1;
 	}
 
 sub check_line{
