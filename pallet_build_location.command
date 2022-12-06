@@ -4,7 +4,7 @@
 # Purpose: Displaying a pallet number to user to help with identifying correct pallet
 # Author: Miroslaw Duraj
 # Date: 10/Mar/2020
-$version = '-4.2';
+$version = '-4.3';
 
 #use strict;
 use Term::ANSIColor;
@@ -256,7 +256,6 @@ sub checkFormat(){
 	} else {
 		print color('bold green');print "Format looks good. Searching in database now...\n";print color('reset');;
 	}
-	<>;
 }
 sub mpn_from_gs1{
 
