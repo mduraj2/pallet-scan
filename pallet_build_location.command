@@ -4,7 +4,7 @@
 # Purpose: Displaying a pallet number to user to help with identifying correct pallet
 # Author: Miroslaw Duraj
 # Date: 10/Mar/2020
-$version = '-4.3';
+$version = '-4.4';
 
 #use strict;
 use Term::ANSIColor;
@@ -193,6 +193,7 @@ while (1)
 	print color('reset');
 	print "Enter the searching MPN or type COMPLETE to go back: ";
 	chomp ($searchMPN = <>);
+	$searchMPN = uc($searchMPN);
 	$searchMPN =~ s/[\n\r\s]+//g;
 	if (uc($searchMPN) eq 'COMPLETE')
 		{ goto SCANPART
@@ -223,27 +224,30 @@ sub checkFormat(){
 
 	if ($lengthValidatedString > 15 && $lengthValidatedString < 27 && index($validatedString, "/A") != -1 )
 	{
+		#print "1";
 		$validatedString = substr($validatedString,16);
 		$first1 = substr($validatedString,0,1);
 	}
 	elsif ($first3 eq '240')
 	{
+		#print "2";
 		$validatedString = substr($validatedString,3);
 		$first1 = substr($validatedString,0,1);
 	}
 	elsif ($first3 eq 'V3,')
 	{
+		#print "3";
 		mpn_from_gs1();
 		$validatedString = substr($validatedString,3);
 		$first1 = substr($validatedString,0,1);
 	}
 	elsif ($first3 eq '1PM')
 	{
+		#print "4";
 		$validatedString = substr($validatedString,2);
 		$first1 = substr($validatedString,0,1);
 		
 	}
-
 	$lengthValidatedString = length $validatedString;
 	if (not ((index($validatedString, $substring) != -1) && ($lengthValidatedString eq 8 || $lengthValidatedString eq 9) && $first1 eq "M")){
 		print "String: $validatedString does not match criteria (8-9 characters, starts with 'M', includes '/A')\n";
