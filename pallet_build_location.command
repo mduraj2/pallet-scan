@@ -4,7 +4,7 @@
 # Purpose: Displaying a pallet number to user to help with identifying correct pallet
 # Author: Miroslaw Duraj
 # Date: 10/Mar/2020
-$version = '-4.1';
+$version = '-4.2';
 
 #use strict;
 use Term::ANSIColor;
@@ -216,42 +216,47 @@ sub commands{
 	$command2 = "Wrong format of station setup.\n";
 }
 sub checkFormat(){
-	#print "$validatedString\n";
 	$first3 = substr($validatedString,0,3);
+	$first1 = substr($validatedString,0,1);
 	$lengthValidatedString = length $validatedString;
 	$substring = "/A";
-	
+
 	if ($lengthValidatedString > 15 && $lengthValidatedString < 27 && index($validatedString, "/A") != -1 )
 	{
 		$validatedString = substr($validatedString,16);
+		$first1 = substr($validatedString,0,1);
 	}
 	elsif ($first3 eq '240')
 	{
 		$validatedString = substr($validatedString,3);
+		$first1 = substr($validatedString,0,1);
 	}
 	elsif ($first3 eq 'V3,')
 	{
 		mpn_from_gs1();
 		$validatedString = substr($validatedString,3);
+		$first1 = substr($validatedString,0,1);
 	}
-	elsif (uc($first3) eq '1PM')
+	elsif ($first3 eq '1PM')
 	{
 		$validatedString = substr($validatedString,2);
+		$first1 = substr($validatedString,0,1);
+		
 	}
-	elsif ( not $lengthValidatedString eq 8 || $lengthValidatedString eq 9 || $lengthValidatedString =~ /$substring/){
+
+	$lengthValidatedString = length $validatedString;
+	if (not ((index($validatedString, $substring) != -1) && ($lengthValidatedString eq 8 || $lengthValidatedString eq 9) && $first1 eq "M")){
+		print "String: $validatedString does not match criteria (8-9 characters, starts with 'M', includes '/A')\n";
 		system "clear";
 		system ("afplay '$dir/redalert.wav' &");
 		print color('bold red');
 		print "Format not found. Try again.\n";
 		sleep 3;
 		goto $routing;
-	}
-	$lengthValidatedString = length $validatedString;
-	if ( $lengthValidatedString eq 8 || $lengthValidatedString eq 9 || $lengthValidatedString =~ /$substring/){
+	} else {
 		print color('bold green');print "Format looks good. Searching in database now...\n";print color('reset');;
 	}
-	
-
+	<>;
 }
 sub mpn_from_gs1{
 
