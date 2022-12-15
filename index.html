@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="css/styles.css" />
+    <title>Pallet sortation</title>
+  </head>
+  <body>
+    <h1>Pallet sortation</h1>
+    <input
+      type="text"
+      id="myInput"
+      onkeyup="myFunction()"
+      placeholder="Search for value.."
+      title="Type in a value"
+    />
+    <h4>(Line, number, mpn)</h4>
+    <div id="myData"></div>
+    <script>
+      fetch("pallet_sortation.json")
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (data) {
+          makeUL(data);
+          //   appendData(data);
+        })
+        .catch(function (err) {
+          console.log("error: " + err);
+        });
+      function makeUL(array) {
+        array.sort((a, b) => (a.number < b.number ? 1 : -1));
+        array.sort((a, b) => (a.line > b.line ? 1 : -1));
+        // Create the list element:
+        var list = document.createElement("ul");
+        list.setAttribute("id", "myUL");
+
+        for (var i = 0; i < array.length; i++) {
+          // Create the list item:
+          var item = document.createElement("li");
+          var x = document.createElement("a");
+
+          // Set its contents:
+          x.appendChild(
+            document.createTextNode(
+              array[i].line + "," + array[i].number + "," + array[i].mpn
+            )
+          );
+          item.appendChild(x);
+          // Add it to the list:
+          list.appendChild(item);
+        }
+        myData.appendChild(list);
+        // Finally, return the constructed list:
+        return myData;
+      }
+
+      function myFunction() {
+        var input, filter, ul, li, a, i, txtValue;
+        input = document.getElementById("myInput");
+        filter = input.value.toUpperCase();
+        ul = document.getElementById("myUL");
+        li = ul.getElementsByTagName("li");
+        for (i = 0; i < li.length; i++) {
+          a = li[i].getElementsByTagName("a")[0];
+          txtValue = a.textContent || a.innerText;
+          if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            li[i].style.display = "";
+          } else {
+            li[i].style.display = "none";
+          }
+        }
+      }
+    </script>
+  </body>
+</html>
