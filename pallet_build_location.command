@@ -4,7 +4,7 @@
 # Purpose: Displaying a pallet number to user to help with identifying correct pallet
 # Author: Miroslaw Duraj
 # Date: 10/Mar/2020
-$version = '-4.4';
+$version = '-4.5';
 
 #use strict;
 use Term::ANSIColor;
@@ -217,8 +217,9 @@ sub commands{
 	$command2 = "Wrong format of station setup.\n";
 }
 sub checkFormat(){
-	$first3 = substr($validatedString,0,3);
 	$first1 = substr($validatedString,0,1);
+	$first2 = substr($validatedString,0,2);
+	$first3 = substr($validatedString,0,3);
 	$lengthValidatedString = length $validatedString;
 	$substring = "/A";
 
@@ -248,9 +249,13 @@ sub checkFormat(){
 		$first1 = substr($validatedString,0,1);
 		
 	}
+	elsif ($first2 eq 'Z1')
+	{
+		#print "5\n";
+	}
 	$lengthValidatedString = length $validatedString;
-	if (not ((index($validatedString, $substring) != -1) && ($lengthValidatedString eq 8 || $lengthValidatedString eq 9) && $first1 eq "M")){
-		print "String: $validatedString does not match criteria (8-9 characters, starts with 'M', includes '/A')\n";
+	if (not (((index($validatedString, $substring) != -1) && ($lengthValidatedString eq 8 || $lengthValidatedString eq 9) && $first1 eq "M")|| ($lengthValidatedString eq 9 && $first2 eq "Z1"))){
+		print "String: $validatedString does not match criteria (8-9 characters, starts with 'M' or 'Z', includes '/A' for 'M' parts)\n";
 		system "clear";
 		system ("afplay '$dir/redalert.wav' &");
 		print color('bold red');
