@@ -4,7 +4,7 @@
 # Purpose: Displaying a pallet number to user to help with identifying correct pallet
 # Author: Miroslaw Duraj
 # Date: 10/Mar/2020
-$version = '-4.5';
+$version = '-4.6';
 
 #use strict;
 use Term::ANSIColor;
@@ -218,8 +218,8 @@ sub commands{
 }
 sub checkFormat(){
 	$first1 = substr($validatedString,0,1);
-	$first2 = substr($validatedString,0,2);
 	$first3 = substr($validatedString,0,3);
+	$first4 = substr($validatedString,0,4);
 	$lengthValidatedString = length $validatedString;
 	$substring = "/A";
 
@@ -249,9 +249,10 @@ sub checkFormat(){
 		$first1 = substr($validatedString,0,1);
 		
 	}
-	elsif ($first2 eq 'Z1')
+	elsif ($first4 eq '1PZ1')
 	{
-		#print "5\n";
+		$validatedString = substr($validatedString,2);
+		$first2 = substr($validatedString,0,2);
 	}
 	$lengthValidatedString = length $validatedString;
 	if (not (((index($validatedString, $substring) != -1) && ($lengthValidatedString eq 8 || $lengthValidatedString eq 9) && $first1 eq "M")|| ($lengthValidatedString eq 9 && $first2 eq "Z1"))){
