@@ -5,7 +5,7 @@
 # Author: Miroslaw Duraj
 # Date: 10/Mar/2020
 $project = 'pallet-build';
-$version = '-5.1';
+$version = '-5.3';
 
 #use strict;
 use Term::ANSIColor;
@@ -591,7 +591,7 @@ sub handle_error{
 
 sub check_version{
 
-	my $file = '/Users/Shared/pallet_build_location.command';
+	my $file = "$dir/pallet_build_location.command";
 
 	open(FH, $file) or die $!;
 
@@ -612,7 +612,7 @@ sub check_version{
 			{
 				print "Updating the current version to the latest one...\n";
 			
-				system("/Users/Shared/Launch_pallet_build_location.command $arg1");
+				system("$dir/Launch_pallet_build_location.command $arg1");
 				#exit;
 			}
 		}	
