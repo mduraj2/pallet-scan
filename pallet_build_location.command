@@ -5,7 +5,7 @@
 # Author: Miroslaw Duraj
 # Date: 10/Mar/2020
 $project = 'pallet-build';
-$version = '-5.0';
+$version = '-5.1';
 
 #use strict;
 use Term::ANSIColor;
@@ -248,9 +248,9 @@ system clear;
 if ($key ne $pass) {
 	print color('bold red');
 	system ("afplay '$dir/sounds/wrongansr.wav'");
-	print "Incorrect password...going back to beginning...";
+	print "Incorrect password...going back to beginning...\n";
 	print color('reset');
-	sleep 2;
+	sleep 3;
 	goto SCANPART;
 }
 	$dbh = DBI->connect($dsn,$username,$password, \%attr) or handle_error (DBI::errstr);
