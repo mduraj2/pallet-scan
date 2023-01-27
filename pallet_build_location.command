@@ -1,10 +1,11 @@
 #!/usr/bin/env perl
 
 # Name: Pallet build location
-# Purpose: Displaying a pallet number to user to help with identifying correct pallet
+# Purpose: Displaying a pallet number to user instead of a need of reading the part number from the box
 # Author: Miroslaw Duraj
 # Date: 10/Mar/2020
-$version = '-4.6';
+$project = 'pallet-build';
+$version = '-5.0';
 
 #use strict;
 use Term::ANSIColor;
@@ -12,6 +13,7 @@ use Term::ANSIColor;
 use v5.10; # for say() function
 use Time::Piece;
 use File::Basename ();
+use Digest::SHA qw(sha256_hex);
 
 $dir = File::Basename::dirname($0);
 $logfile = "$0.log";
@@ -149,7 +151,12 @@ while (1)
 	elsif (uc($mpn) eq 'SEARCH')
 	{
 		goto SEARCH;
-	} else {
+	}
+	elsif (uc($mpn) eq 'CLEAR')
+	{
+		goto CLEAR;
+	}
+	else {
 	$validatedString = $mpn;
 	checkFormat();
 	}
@@ -210,12 +217,96 @@ while (1)
 	<>;
 	check_version();
 }
+
+CLEAR:
+$routing = "CLEAR";
+while (1)
+{
+	$dbh = DBI->connect($dsn0,$username,$password, \%attr) or handle_error (DBI::errstr);
+	checkPassword($dbh);
+	system clear;
+	print color('bold green');
+	print "Pallet build location$version - $stn\n";
+	print color('reset');
+	print "Are you sure you want to clear the sortation (type 'Y')? ";
+	chomp ($confirmation = <>);
+	$confirmation = uc($confirmation);
+	$confirmation =~ s/[\n\r\s]+//g;
+
+	if ($confirmation ne 'Y') {
+		goto SCANPART;
+	}
+
+print "Enter password: ";
+
+chomp ($pass = <>);
+$pass = sha256_hex($pass);
+system clear;
+	print color('bold green');
+	print "Pallet build location$version - $stn\n";
+	print color('reset');
+if ($key ne $pass) {
+	print color('bold red');
+	system ("afplay '$dir/sounds/wrongansr.wav'");
+	print "Incorrect password...going back to beginning...";
+	print color('reset');
+	sleep 2;
+	goto SCANPART;
+}
+	$dbh = DBI->connect($dsn,$username,$password, \%attr) or handle_error (DBI::errstr);
+	clearSortation($dbh);
+	print color('bold yellow');
+	print "Pallet build sortation for line $line has been cleared.\n";
+	print color('reset');
+	print "Press Enter to continue...\n";
+	<>;
+	goto SCANPART;
+}
 #sub routines
+##############################################################################
 sub commands{
 	$command0 = "Contact Supervisor! Press Enter to continue...";
 	$command1 = "Station has not been set up yet!\n";
 	$command2 = "Wrong format of station setup.\n";
 }
+
+sub clearSortation {
+	($dbh) = @_;
+    $sql = "DELETE FROM pallet_build_loc WHERE line = '$line'";
+    $sth = $dbh->prepare($sql);
+    
+    # execute the query
+    $sth->execute();
+    $sth->finish;
+}
+sub checkPassword{
+# query from the links table
+    ($dbh) = @_;
+    $sql = "SELECT encryptedpassword FROM passwords WHERE name = '$project'";
+    $sth = $dbh->prepare($sql);
+    
+    # execute the query
+    $sth->execute();
+    
+	my $ref;
+    
+    $ref = $sth->fetchall_arrayref([]);
+    
+	if ((0 + @{$ref}) eq 0) {
+		system ("afplay '$dir/sounds/redalert.wav'");
+		print color('bold red');
+		print "No passwords found in db...Contact TE\n";
+		print color('reset');
+		exit;
+	} else {
+		foreach $data (@$ref)
+            {
+                ($key) = @$data;
+            }
+	}
+    $sth->finish;
+}
+
 sub checkFormat(){
 	$first1 = substr($validatedString,0,1);
 	$first3 = substr($validatedString,0,3);
@@ -256,7 +347,7 @@ sub checkFormat(){
 	}
 	$lengthValidatedString = length $validatedString;
 	if (not (((index($validatedString, $substring) != -1) && ($lengthValidatedString eq 8 || $lengthValidatedString eq 9) && $first1 eq "M")|| ($lengthValidatedString eq 9 && $first2 eq "Z1"))){
-		print "String: $validatedString does not match criteria (8-9 characters, starts with 'M' or 'Z', includes '/A' for 'M' parts)\n";
+		print "String: $validatedString does not match criteria (8-9 characters & starts with 'M' & includes '/A' or 9 characters & starts with 'Z')\n";
 		system "clear";
 		system ("afplay '$dir/redalert.wav' &");
 		print color('bold red');
