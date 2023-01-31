@@ -5,7 +5,7 @@
 # Author: Miroslaw Duraj
 # Date: 10/Mar/2020
 $project = 'pallet-build';
-$version = '-5.3';
+$version = '-6.0';
 
 #use strict;
 use Term::ANSIColor;
@@ -156,6 +156,10 @@ while (1)
 	{
 		goto CLEAR;
 	}
+	elsif (uc($mpn) eq 'STATUS')
+	{
+		goto STATUS;
+	}
 	else {
 	$validatedString = $mpn;
 	checkFormat();
@@ -262,12 +266,129 @@ if ($key ne $pass) {
 	<>;
 	goto SCANPART;
 }
+
+STATUS:
+$routing="STATUS";
+$clearStatus = '';
+while (1)
+{
+	$dbh = DBI->connect($dsn0,$username,$password, \%attr) or handle_error (DBI::errstr);
+	checkPassword($dbh);
+
+	checkStatus($dbh);
+	$clearStatus = $resultCheckStatus;
+
+	system clear;
+	print color('bold green');
+	print "Pallet build location$version - $stn\n";
+	print color('reset');
+	if (uc($clearStatus) eq "N") {
+		print "Automatic clearing for ";print color('bold blue');print "$line";print color('reset');print " is currently ";print color('bold red');print "disabled\n";
+		print color('reset');
+		$newClearStatus='Y';
+		$newClearStatusMessage = 'enabled';
+	} else {
+		print "Automatic clearing for ";print color('bold blue');print "$line";print color('reset');print " is currently ";print color('bold green'); print "enabled\n";
+		print color('reset');
+		$newClearStatus='N';
+		$newClearStatusMessage = 'disabled';
+	}
+	print "Are you sure you want to change it (type 'Y')? ";
+	chomp ($confirmation = <>);
+	$confirmation = uc($confirmation);
+	$confirmation =~ s/[\n\r\s]+//g;
+
+	if ($confirmation ne 'Y') {
+		goto SCANPART;
+	}
+
+print "Enter password: ";
+
+chomp ($pass = <>);
+$pass = sha256_hex($pass);
+system clear;
+	print color('bold green');
+	print "Pallet build location$version - $stn\n";
+	print color('reset');
+if ($key ne $pass) {
+	print color('bold red');
+	system ("afplay '$dir/sounds/wrongansr.wav'");
+	print "Incorrect password...going back to beginning...\n";
+	print color('reset');
+	sleep 3;
+	goto SCANPART;
+}
+
+$dbh = DBI->connect($dsn0,$username,$password, \%attr) or handle_error (DBI::errstr);
+changeStatus($dbh);
+	print "Clearing status for $line has been ";
+	if (uc($newClearStatus) eq 'Y') {print color('bold green')} else { print color('bold red')}; print "$newClearStatusMessage.\n";
+	print color('reset');
+	print "Press Enter to continue...\n";
+	<>;
+	goto SCANPART;
+}
 #sub routines
 ##############################################################################
 sub commands{
 	$command0 = "Contact Supervisor! Press Enter to continue...";
 	$command1 = "Station has not been set up yet!\n";
 	$command2 = "Wrong format of station setup.\n";
+}
+
+sub changeStatus {
+	($dbh) = @_;
+    $sql = "SELECT id FROM modes WHERE line='$line'";
+    $sth = $dbh->prepare($sql);
+    
+    # execute the query
+    $sth->execute();
+
+	my $ref;
+    
+    $ref = $sth->fetchall_arrayref([]);
+
+if ((0 + @{$ref}) > 0)
+    {
+    $sql = "UPDATE modes SET clearstatus='$newClearStatus' WHERE line='$line'";
+    $sth = $dbh->prepare($sql);
+ 
+    # execute the query
+    $sth->execute();
+    } else {
+    $sql = "INSERT INTO modes VALUES (NULL,'$line','NA','NA','NA','NA',DEFAULT)";
+    $sth = $dbh->prepare($sql);
+    
+    # execute the query
+    $sth->execute();
+
+    }
+    $sth->finish;
+}
+
+sub checkStatus {
+	($dbh) = @_;
+    $sql = "SELECT clearstatus FROM modes WHERE line='$line'";
+    $sth = $dbh->prepare($sql);
+    
+    # execute the query
+    $sth->execute();
+
+	my $ref;
+    
+    $ref = $sth->fetchall_arrayref([]);
+
+if ((0 + @{$ref}) > 0)
+    {
+        foreach $data (@$ref)
+        {
+            ($resultCheckStatus) = @$data;
+        }
+
+    } else {
+    	$resultCheckStatus = "";
+    }
+    $sth->finish;
 }
 
 sub clearSortation {
