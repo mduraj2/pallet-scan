@@ -21,3 +21,8 @@ tables(columns)
 db:p3
 tables(columns):
 #1 pallet_build_loc(number,line,mpn,status,vendor)
+
+# version history
+
+1.0 - 10.03.2020 - initial app
+6.0 - 31.01.2023 - the logic changed to simplify validation scans
