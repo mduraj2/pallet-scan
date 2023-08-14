@@ -5,8 +5,7 @@
 # Author: Miroslaw Duraj
 # Date: 10/Mar/2020
 $project = 'pallet-build';
-$version = '-6.1';
-$counter = 0;
+$version = '-6.2';
 
 #use strict;
 use Term::ANSIColor;
@@ -56,6 +55,7 @@ if ($ip_address eq '') {
 	}
 }
 
+checkVersion($dbh);
 commands();
 
 check_sn($dbh);
@@ -126,11 +126,6 @@ SCANPART:
 $mpn = '';
 $first_3_mpn = '';
 $routing = "SCANPART";
-
-$counter = $counter+1;
-if ($counter eq 50){
-	downloadLatest();
-}
 
 while (1)
 {
@@ -715,6 +710,42 @@ sub handle_error{
 	print color('reset');
 	<>;
 	exit;
+}
+
+sub checkVersion{
+	($dbh) = @_;
+    $sql = "SELECT version FROM general.versions
+	WHERE name='$project'";
+
+    $sth = $dbh->prepare($sql);
+    
+    # execute the query
+    $sth->execute();
+	
+	my $ref;
+    
+    $ref = $sth->fetchall_arrayref([]);
+    if ((0 + @{$ref}) > 0)
+	{
+	 foreach $data (@$ref)
+            {
+                ($latestVersion) = @$data;
+            }
+												if ($version ne $latestVersion){
+													downloadLatest();
+													check_version();
+												}
+	} else {
+		print color('bold red');
+    	print "No version specified in db\n";
+		print color('reset');
+		print "#################################################\n";
+		print "Press Enter to continue...";
+		<>;
+    	goto SCANPART;
+	}
+	
+    $sth->finish;
 }
 
 sub downloadLatest{
