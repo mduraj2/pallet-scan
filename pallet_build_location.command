@@ -5,7 +5,8 @@
 # Author: Miroslaw Duraj
 # Date: 10/Mar/2020
 $project = 'pallet-build';
-$version = '-6.0';
+$version = '-6.1';
+$counter = 0;
 
 #use strict;
 use Term::ANSIColor;
@@ -105,6 +106,7 @@ system clear;
 
 if (index($stn, "PALLETBUILD") != -1)
 	{
+	 downloadLatest();
 		goto SCANPART;
 	}
 else
@@ -124,6 +126,11 @@ SCANPART:
 $mpn = '';
 $first_3_mpn = '';
 $routing = "SCANPART";
+
+$counter = $counter+1;
+if ($counter eq 50){
+	downloadLatest();
+}
 
 while (1)
 {
@@ -708,6 +715,15 @@ sub handle_error{
 	print color('reset');
 	<>;
 	exit;
+}
+
+sub downloadLatest{
+	$passwordToCopy = 'apple';
+	$userToCopy = 'apple';
+	$IPAddressToCopy = '172.30.1.199';
+
+	system `sshpass -p '$passwordToCopy' scp $userToCopy\@$IPAddressToCopy:/Users/Shared/Versions/pallet-scan/pallet_build_location.command /Users/Shared/Versions/pallet-scan`;
+
 }
 
 sub check_version{
