@@ -41,8 +41,8 @@ sub check_version{
 		if($string =~ /.version.[=]./)
 		{
 			print "$string";
-			$len_string = (length $string) - 16;
-			$new_ver = substr($string,13,$len_string);
+			$len_string = (length $string) - 15;
+			$new_ver = substr($string,12,$len_string);
 		}	
 	}
 }
