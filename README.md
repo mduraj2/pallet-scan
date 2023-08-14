@@ -17,12 +17,18 @@ db:general
 tables(columns)
 #1 modes(id,line,mode,product,product_options,mode_options,clearstatus)
 #2 passwords(name,password,encryptedpassword)
+#3 versions(name,version)
 
 db:p3
 tables(columns):
 #1 pallet_build_loc(number,line,mpn,status,vendor)
 
+Packages:
+sshpass-1.10
+Command_Line_Tools_for_Xcode_11.4_beta_2
+
 # version history
 
 1.0 - 10.03.2020 - initial app
 6.0 - 31.01.2023 - the logic changed to simplify validation scans
+7.0 - 14.08.2023 - the logic has changed and includes the automatic check whether the current version is different than one in db, if so, it 'scp' from the shared folder the latest one and relaunches. Unfortunately sshpass package is needed so every station needs to have it.
