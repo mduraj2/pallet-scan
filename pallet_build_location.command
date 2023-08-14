@@ -5,7 +5,7 @@
 # Author: Miroslaw Duraj
 # Date: 10/Mar/2020
 $project = 'pallet-build';
-$version = '-6.2';
+$version = '-6.3';
 
 #use strict;
 use Term::ANSIColor;
@@ -176,7 +176,7 @@ while (1)
     print "This box belongs to pallet: "; print color('reset'); print "$location_pallet_build\n";
     
 	sleep 2;
-	
+	checkVersion($dbh);
 	check_version();
 	
 	goto SCANPART;
