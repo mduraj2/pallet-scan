@@ -24,7 +24,7 @@ tables(columns):
 #1 pallet_build_loc(number,line,mpn,status,vendor)
 
 Packages:
-sshpass-1.10
+sshpass-1.10 (cd to the folder -> ./configure -> sudo make install)
 Command_Line_Tools_for_Xcode_11.4_beta_2
 
 # version history
