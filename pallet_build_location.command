@@ -5,7 +5,11 @@
 # Author: Miroslaw Duraj
 # Date: 10/Mar/2020
 $project = 'pallet-build';
+<<<<<<< HEAD
 $version = '-7.5';
+=======
+$version = '-7.6';
+>>>>>>> 0e1e218 (updating check_line module)
 
 #use strict;
 use Term::ANSIColor;
@@ -516,8 +520,7 @@ sub check_line{
 	$p_end = pos($str_end) - length($find);
 	$p = ($p_end - $p_begin);
 
-	$line = substr($str_begin, $p_begin, 4) if $p_begin>-1;
-
+	$line = substr($str_begin, $p_begin, $p) if $p_begin>-1;
 }
 
 sub checkMPN {
