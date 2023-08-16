@@ -5,11 +5,8 @@
 # Author: Miroslaw Duraj
 # Date: 10/Mar/2020
 $project = 'pallet-build';
-<<<<<<< HEAD
-$version = '-7.5';
-=======
+
 $version = '-7.6';
->>>>>>> 0e1e218 (updating check_line module)
 
 #use strict;
 use Term::ANSIColor;
