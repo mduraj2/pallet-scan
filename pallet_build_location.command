@@ -5,7 +5,7 @@
 # Author: Miroslaw Duraj
 # Date: 10/Mar/2020
 $project = 'pallet-build';
-$version = '-7.4';
+$version = '-7.5';
 
 #use strict;
 use Term::ANSIColor;
