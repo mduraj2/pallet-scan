@@ -32,3 +32,4 @@ Command_Line_Tools_for_Xcode_11.4_beta_2
 1.0 - 10.03.2020 - initial app
 6.0 - 31.01.2023 - the logic changed to simplify validation scans
 7.0 - 14.08.2023 - the logic has changed and includes the automatic check whether the current version is different than one in db, if so, it 'scp' from the shared folder the latest one and relaunches. Unfortunately sshpass package is needed so every station needs to have it.
+7.6 - 16.08.2023 - there was a bug in the code that checks the line from the received name. It was hardcoded to '4' instead taking everything what is between the '\_'
