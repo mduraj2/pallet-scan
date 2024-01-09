@@ -6,7 +6,7 @@
 # Date: 10/Mar/2020
 $project = 'pallet-build';
 
-$version = '-7.6';
+$version = '-7.7';
 
 #use strict;
 use Term::ANSIColor;
@@ -742,7 +742,6 @@ sub checkVersion{
 		print "#################################################\n";
 		print "Press Enter to continue...";
 		<>;
-    	goto SCANPART;
 	}
 	
     $sth->finish;
